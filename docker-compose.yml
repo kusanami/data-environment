@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  namenode:
+    image: sbaldrich/hadoop-namenode
+    ports:
+      - "50070:50070"
+      - "9000:9000"
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    container_name: "namenode"
+    volumes:
+      - "./conf/hadoop:/opt/hadoop/etc/hadoop/"
+      - "./conf/hive/hive-site.xml:/opt/hive/conf/hive-site.xml"
+      - "./etc/ml-100k.zip:/home/root/ml-100k.zip"
+  datanode0:
+    image: sbaldrich/hadoop-datanode
+    volumes:
+      - "./conf/hadoop:/opt/hadoop/etc/hadoop/"
+      - "./conf/hive/hive-site.xml:/opt/hive/conf/hive-site.xml"
+    container_name: "datanode0"
+  coordinator:
+    build:
+      context: presto/presto-coordinator
+      args:
+        node_id: coordinator
+    volumes:
+        - "./conf/presto/catalog:/usr/local/presto/etc/catalog"
+    ports:
+      - "9080:9080"
+    container_name: "coordinator"
+  worker0:
+    build:
+      context: presto/presto-worker
+      args:
+        node_id: worker0
+    volumes:
+        - "./conf/presto/catalog:/usr/local/presto/etc/catalog"
+    container_name: "worker0"
+    ports:
+      - "9081:8081"
+  worker1:
+    build:
+      context: presto/presto-worker
+      args:
+        node_id: worker1
+    volumes:
+        - "./conf/presto/catalog:/usr/local/presto/etc/catalog"
+    container_name: "worker1"
+    ports:
+      - "9082:8081"
+  worker2:
+    build:
+      context: presto/presto-worker
+      args:
+        node_id: worker2
+    volumes:
+        - "./conf/presto/catalog:/usr/local/presto/etc/catalog"
+    container_name: "worker2"
+    ports:
+      - "9083:8081"
