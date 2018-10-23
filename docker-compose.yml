@@ -19,6 +19,7 @@ services:
     volumes:
       - "./conf/hadoop:/opt/hadoop/etc/hadoop/"
       - "./conf/hive/hive-site.xml:/opt/hive/conf/hive-site.xml"
+      -."./data:/tmp/hadoop-root"
     container_name: "datanode0"
   coordinator:
     build:
